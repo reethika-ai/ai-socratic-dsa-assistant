@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routes.chat import router as chat_router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -11,14 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(chat_router)
+
 @app.get("/")
 def root():
     return {
         "message": "AI Socratic Tutor Backend Running"
-    }
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy"
     }
