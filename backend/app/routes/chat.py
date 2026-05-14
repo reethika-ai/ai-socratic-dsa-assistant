@@ -1,5 +1,17 @@
 from fastapi import APIRouter
-from app.models.chat_models import ChatRequest, ChatResponse
+
+from app.models.chat_models import (
+    ChatRequest,
+    ChatResponse
+)
+
+from app.services.llm_service import (
+    generate_ai_response
+)
+
+from app.services.socratic_engine import (
+    build_socratic_prompt
+)
 
 router = APIRouter()
 
@@ -8,7 +20,10 @@ async def chat(request: ChatRequest):
 
     student_message = request.message
 
-    # Temporary fake AI logic
-    ai_response = f"You asked: '{student_message}'. What do you think the time complexity is?"
+    prompt = build_socratic_prompt(student_message)
 
-    return ChatResponse(response=ai_response)
+    ai_response = generate_ai_response(prompt)
+
+    return ChatResponse(
+        response=ai_response
+    )
