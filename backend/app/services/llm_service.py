@@ -1,24 +1,35 @@
 import os
+from groq import Groq
 from dotenv import load_dotenv
-from google import genai
 
 load_dotenv()
 
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    raise ValueError("❌ GROQ_API_KEY not found in environment variables")
+
+client = Groq(api_key=api_key)
+
 
 def generate_ai_response(prompt: str):
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.6,
         )
 
-        return response.text
+        return response.choices[0].message.content
 
     except Exception as e:
-         import traceback
-         print("🔥 FULL GEMINI ERROR:")
-         traceback.print_exc()
-         raise e
+        import traceback
+        print("🔥 GROQ ERROR:")
+        traceback.print_exc()
+
+        return f"Error: {str(e)}"
