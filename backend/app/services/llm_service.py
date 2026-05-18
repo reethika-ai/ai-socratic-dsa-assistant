@@ -4,12 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("GROQ_API_KEY")
-
-if not api_key:
-    raise ValueError("❌ GROQ_API_KEY not found in environment variables")
-
-client = Groq(api_key=api_key)
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def generate_ai_response(prompt: str):
@@ -28,8 +23,5 @@ def generate_ai_response(prompt: str):
         return response.choices[0].message.content
 
     except Exception as e:
-        import traceback
-        print("🔥 GROQ ERROR:")
-        traceback.print_exc()
-
-        return f"Error: {str(e)}"
+        print("🔥 GROQ ERROR:", e)
+        return "I'm having trouble responding right now."
