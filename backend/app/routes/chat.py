@@ -3,6 +3,8 @@ from fastapi import APIRouter
 from app.models.chat_models import ChatRequest, ChatResponse
 
 from app.services.llm_service import generate_ai_response
+from app.analyzers.code_analyzer import analyze_code
+from app.services.tutoring_decision_engine import generate_code_context
 from app.services.database_service import (
     save_message,
     get_recent_messages
@@ -25,7 +27,7 @@ async def chat(request: ChatRequest):
     student_id = request.student_id
     message = request.message
 
-
+    
     save_message(student_id, "student", message)
 
     state = get_student_state(student_id)
@@ -38,19 +40,24 @@ async def chat(request: ChatRequest):
         for m in history
     ]
 
-  
+    code_context = ""
+
+    if request.code:
+        analysis = analyze_code(request.code)
+        code_context = generate_code_context(analysis)
+
+    
     prompt = build_socratic_prompt(
-        message,
-        history_formatted,
-        hint_level=state["hint_level"]
+        student_message=message,
+        conversation_history=history_formatted,
+        hint_level=1,  
+        code_context=code_context
     )
 
-   
+    
     ai_response = generate_ai_response(prompt)
 
+  
     save_message(student_id, "assistant", ai_response)
-
-    if any(word in message.lower() for word in ["stuck", "hint", "don't know"]):
-        increase_hint_level(student_id)
 
     return ChatResponse(response=ai_response)
