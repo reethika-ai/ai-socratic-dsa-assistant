@@ -2,31 +2,33 @@ from app.prompts.socratic_prompt import SYSTEM_PROMPT
 from app.services.hint_engine import get_hint_instruction
 
 
-def build_socratic_prompt(student_message, history, hint_level):
+def build_socratic_prompt(
+    student_message,
+    conversation_history,
+    hint_level,
+    code_context=""
+):
 
     history_text = ""
 
-    for msg in history:
+    for msg in conversation_history[-6:]:
         history_text += f"{msg['role']}: {msg['content']}\n"
 
-    hint_instruction = get_hint_instruction(hint_level)
-
     prompt = f"""
-{SYSTEM_PROMPT}
+    {SYSTEM_PROMPT}
 
-Hint Level: {hint_level}
+    Hint level: {hint_level}
 
-Hint Rule:
-{hint_instruction}
+    Conversation history:
+    {history_text}
 
-Conversation History:
-{history_text}
+    Code analysis:
+    {code_context}
 
-Student Message:
-{student_message}
+    Student message:
+    {student_message}
 
-You MUST respond as a Socratic tutor.
-Ask only ONE question.
-"""
+    Respond as a Socratic tutor.
+    """
 
     return prompt
