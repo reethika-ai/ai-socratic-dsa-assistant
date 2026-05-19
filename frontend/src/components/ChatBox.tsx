@@ -1,91 +1,87 @@
 "use client";
+import { useState } from "react";
+import { sendMessage } from "../services/api";
 
-import { useEffect, useRef, useState } from "react";
-
-import MessageBubble from "./MessageBubble";
-import ChatInput from "./ChatInput";
-
-import { Message } from "@/types/chat";
-import { sendMessage } from "@/services/api";
+const STUDENT_ID = "student_001";
 
 export default function ChatBox() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<any[]>([
+    {
+      role: "assistant",
+      content:
+        "Hi! I'm your AI Socratic DSA tutor. Ask me about sorting algorithms.",
+    },
+  ]);
   const [loading, setLoading] = useState(false);
-  const messageListRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    messageListRef.current?.scrollTo({
-      top: messageListRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages, loading]);
+  const handleSend = async () => {
+    if (!input.trim()) return;
 
-  const handleSend = async (message: string) => {
-    const trimmedMessage = message.trim();
-    if (!trimmedMessage) return;
+    const userMessage = input;
 
-    const userMessage: Message = {
-      role: "user",
-      content: trimmedMessage,
-    };
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: userMessage },
+    ]);
 
-    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
     setLoading(true);
 
     try {
-      const data = await sendMessage(trimmedMessage);
+      const data = await sendMessage(STUDENT_ID, userMessage);
 
-      const aiMessage: Message = {
-        role: "assistant",
-        content: data.response || "Sorry, I could not generate a response.",
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      console.error("Chat API error:", error);
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: "The AI service is unavailable. Please try again.",
-        },
+        { role: "assistant", content: data.response },
       ]);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Error getting response" },
+      ]);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="w-full max-w-2xl bg-zinc-900 p-4 rounded-xl shadow-lg">
-      <div
-        ref={messageListRef}
-        className="h-[500px] overflow-y-auto p-4 border border-zinc-700 rounded-lg bg-zinc-950"
-      >
-        {messages.length === 0 ? (
-          <p className="text-gray-500">
-            Start asking DSA questions and the AI will respond here.
-          </p>
-        ) : (
-          messages.map((message, index) => (
-            <MessageBubble
-              key={index}
-              role={message.role}
-              content={message.content}
-            />
-          ))
-        )}
-
-        {loading && (
-          <div className="mt-4 text-center text-sm text-gray-400">
-            AI is typing...
+    <div className="p-4 max-w-xl mx-auto">
+      
+      {/* Messages */}
+      <div className="space-y-2 mb-4">
+        {messages.map((msg, i) => (
+          <div key={i}>
+            <b>{msg.role === "user" ? "You" : "AI"}:</b>{" "}
+            {msg.content}
           </div>
-        )}
+        ))}
       </div>
 
-      <ChatInput
-        onSend={handleSend}
-        loading={loading}
-      />
+      {/* Loading */}
+      {loading && (
+        <div className="text-gray-400 text-sm">
+          AI is thinking...
+        </div>
+      )}
+
+      {/* Input */}
+      <div className="flex gap-2 mt-2">
+        <input
+          className="border p-2 flex-1"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask something..."
+        />
+
+        <button
+          onClick={handleSend}
+          className="bg-blue-500 text-white px-4"
+        >
+          Send
+        </button>
+      </div>
     </div>
   );
 }

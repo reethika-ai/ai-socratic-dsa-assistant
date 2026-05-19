@@ -1,24 +1,21 @@
-const BASE_URL = "http://127.0.0.1:8000";
-
-export interface ChatResponse {
-  response: string;
-}
-
-export async function sendMessage(message: string): Promise<ChatResponse> {
-  const response = await fetch(`${BASE_URL}/chat`, {
+export async function sendMessage(
+  studentId: string,
+  message: string
+) {
+  const res = await fetch("http://127.0.0.1:8000/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      message,
+      student_id: studentId,
+      message: message,
     }),
   });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Chat request failed with status ${response.status}: ${text}`);
+  if (!res.ok) {
+    throw new Error("API error");
   }
 
-  return response.json();
+  return res.json();
 }
