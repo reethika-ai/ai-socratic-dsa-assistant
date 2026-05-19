@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.database.init_db import init_db
 from app.routes.chat import router as chat_router
 
 app = FastAPI()
+init_db()
 import traceback
 from fastapi import Request
 from fastapi.responses import JSONResponse
