@@ -1,6 +1,7 @@
 export async function sendMessage(
   studentId: string,
-  message: string
+  message: string,
+  code?: string
 ) {
   const res = await fetch("http://127.0.0.1:8000/chat", {
     method: "POST",
@@ -9,13 +10,10 @@ export async function sendMessage(
     },
     body: JSON.stringify({
       student_id: studentId,
-      message: message,
+      message,
+      code,
     }),
   });
-
-  if (!res.ok) {
-    throw new Error("API error");
-  }
 
   return res.json();
 }

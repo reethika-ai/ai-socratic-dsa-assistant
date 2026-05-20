@@ -3,9 +3,11 @@ import { useState } from "react";
 import { sendMessage } from "../services/api";
 
 const STUDENT_ID = "student_001";
+;
 
 export default function ChatBox() {
   const [input, setInput] = useState("");
+  const [code, setCode] = useState("")
   const [messages, setMessages] = useState<any[]>([
     {
       role: "assistant",
@@ -29,7 +31,7 @@ export default function ChatBox() {
     setLoading(true);
 
     try {
-      const data = await sendMessage(STUDENT_ID, userMessage);
+      const data = await sendMessage(STUDENT_ID, userMessage,code);
 
       setMessages((prev) => [
         ...prev,
@@ -74,7 +76,12 @@ export default function ChatBox() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask something..."
         />
-
+        <textarea
+            placeholder="Paste your code here..."
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="border p-2 w-full mt-2 h-32"
+          />
         <button
           onClick={handleSend}
           className="bg-blue-500 text-white px-4"
