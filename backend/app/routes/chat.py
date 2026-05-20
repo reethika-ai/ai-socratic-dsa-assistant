@@ -1,22 +1,11 @@
 from fastapi import APIRouter
-
 from app.models.chat_models import ChatRequest, ChatResponse
 
 from app.services.llm_service import generate_ai_response
 from app.analyzers.code_analyzer import analyze_code
 from app.services.tutoring_decision_engine import generate_code_context
-from app.services.database_service import (
-    save_message,
-    get_recent_messages
-)
-
+from app.services.database_service import save_message, get_recent_messages
 from app.services.socratic_engine import build_socratic_prompt
-
-
-from app.services.state_manager import (
-    get_student_state,
-    increase_hint_level
-)
 
 router = APIRouter()
 
@@ -27,12 +16,8 @@ async def chat(request: ChatRequest):
     student_id = request.student_id
     message = request.message
 
-    
     save_message(student_id, "student", message)
 
-    state = get_student_state(student_id)
-
-  
     history = get_recent_messages(student_id)
 
     history_formatted = [
@@ -46,18 +31,15 @@ async def chat(request: ChatRequest):
         analysis = analyze_code(request.code)
         code_context = generate_code_context(analysis)
 
-    
     prompt = build_socratic_prompt(
         student_message=message,
         conversation_history=history_formatted,
-        hint_level=1,  
+        hint_level=1,
         code_context=code_context
     )
 
-    
     ai_response = generate_ai_response(prompt)
 
-  
     save_message(student_id, "assistant", ai_response)
 
     return ChatResponse(response=ai_response)

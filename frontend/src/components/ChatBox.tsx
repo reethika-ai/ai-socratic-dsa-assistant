@@ -1,13 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { sendMessage } from "../services/api";
 
 const STUDENT_ID = "student_001";
-;
 
 export default function ChatBox() {
   const [input, setInput] = useState("");
-  const [code, setCode] = useState("")
+  const [code, setCode] = useState("");
+
   const [messages, setMessages] = useState<any[]>([
     {
       role: "assistant",
@@ -15,33 +15,63 @@ export default function ChatBox() {
         "Hi! I'm your AI Socratic DSA tutor. Ask me about sorting algorithms.",
     },
   ]);
+
   const [loading, setLoading] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  const TypingIndicator = () => (
+    <div className="text-gray-400 text-sm italic">
+      AI is typing...
+    </div>
+  );
 
   const handleSend = async () => {
     if (!input.trim()) return;
 
     const userMessage = input;
 
+    // add messages
     setMessages((prev) => [
       ...prev,
       { role: "user", content: userMessage },
+      { role: "assistant", content: "Thinking..." },
     ]);
 
     setInput("");
     setLoading(true);
 
     try {
-      const data = await sendMessage(STUDENT_ID, userMessage,code);
+      const data = await sendMessage(
+        STUDENT_ID,
+        userMessage,
+        code
+      );
+
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          role: "assistant",
+          content: data.response,
+        };
+        return updated;
+      });
+
+    } catch (error) {
+      console.error(error);
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.response },
-      ]);
-    } catch (error) {
-      console.error(error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Error getting response" },
+        {
+          role: "assistant",
+          content: "Error getting response",
+        },
       ]);
     }
 
@@ -50,7 +80,7 @@ export default function ChatBox() {
 
   return (
     <div className="p-4 max-w-xl mx-auto">
-      
+
       {/* Messages */}
       <div className="space-y-2 mb-4">
         {messages.map((msg, i) => (
@@ -59,32 +89,34 @@ export default function ChatBox() {
             {msg.content}
           </div>
         ))}
+
+        {/* Typing indicator */}
+        {loading && <TypingIndicator />}
+
+        {/* Auto scroll */}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="text-gray-400 text-sm">
-          AI is thinking...
-        </div>
-      )}
-
       {/* Input */}
-      <div className="flex gap-2 mt-2">
+      <div className="mt-4 space-y-2">
         <input
-          className="border p-2 flex-1"
+          className="border p-2 w-full"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask something..."
         />
+
         <textarea
-            placeholder="Paste your code here..."
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="border p-2 w-full mt-2 h-32"
-          />
+          className="border p-2 w-full h-32"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Paste your code here..."
+        />
+
         <button
           onClick={handleSend}
-          className="bg-blue-500 text-white px-4"
+          disabled={loading}
+          className="bg-blue-500 text-white px-4 py-2 w-full disabled:opacity-50"
         >
           Send
         </button>
