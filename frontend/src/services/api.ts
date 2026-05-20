@@ -15,5 +15,9 @@ export async function sendMessage(
     }),
   });
 
+  if (!res.ok) {
+    throw new Error("Failed to connect to backend");
+  }
+
   return res.json();
 }
