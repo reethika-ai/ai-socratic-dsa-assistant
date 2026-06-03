@@ -3,8 +3,11 @@ export async function sendMessage(
   message: string,
   code?: string
 ) {
+  const API_URL =
+    "https://ai-socratic-dsa-assistant-8.onrender.com";
+
   const res = await fetch(
-    "https://ai-socratic-dsa-assistant-8.onrender.com/chat",
+    `${API_URL}/chat`,
     {
       method: "POST",
       headers: {
