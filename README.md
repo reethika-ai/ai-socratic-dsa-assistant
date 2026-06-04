@@ -218,7 +218,7 @@ DATABASE_URL=your_postgres_url
 }
 ```
 
-# 💬 Sample Interaction
+#  Sample Interaction
 
 ## User
 
@@ -249,17 +249,17 @@ How does choosing a pivot help divide the problem into smaller parts?
   Render
   Neon
 
-# 📸 API Preview
+#  API Preview
 
 ![API Preview](screenshots/api-preview.png)
 
-# 📈 Future Improvements
+# Future Improvements
 
 * Adaptive difficulty based on student level
 * Progress tracking system
 * Personalized learning paths
 * Multi-language support
 
-# 🏁 Summary
+#  Summary
 
 This project demonstrates an end-to-end AI tutoring platform that combines modern web development, prompt engineering, Large Language Models, and cloud deployment to create an interactive DSA learning experience.
