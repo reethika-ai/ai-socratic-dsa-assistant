@@ -38,7 +38,7 @@ This project solves that problem by creating an AI tutor that:
 
 # Project Structure
   ```text
-ai-socratic-dsa-assistant/
+ ai-socratic-dsa-assistant/
 │
 ├── backend/
 │   ├── app/
@@ -46,16 +46,27 @@ ai-socratic-dsa-assistant/
 │   │   ├── services/
 │   │   ├── database/
 │   │   ├── analyzers/
-│   │   └── models/
-│   │   
-│   └── requirements.txt
+│   │   ├── models/
+│   │   ├── memory/
+│   │   ├── prompts/
+│   │   └── main.py
+│   │
+│   ├── requirements.txt
+│   └── .env
 │
 ├── frontend/
 │   ├── app/
-│   ├── components/
-│   ├── services/
-│   └── public/
+│   ├── src/
+│   ├── public/
+│   │
+│   ├── package.json
+│   ├── next.config.ts
+│   └── tsconfig.json
 │
+├── screenshots/
+│   └── api-preview.png
+│
+├── .gitignore
 └── README.md
 ```
 
@@ -114,7 +125,7 @@ This project was developed as a collaborative effort.
 * Implemented API communication layer
 * Managed end-to-end request and response flow
 
-### Deployment & DevOps
+### Deployment
 * Deployed backend on Render
 * Configured frontend deployment on Netlify
 * Managed environment variables
@@ -137,6 +148,7 @@ This project was developed as a collaborative effort.
 
 ```bash
 git clone https://github.com/reethika-ai/ai-socratic-dsa-assistant
+
 cd ai-socratic-dsa-assistant
 ```
 
@@ -146,6 +158,7 @@ cd ai-socratic-dsa-assistant
 
 ```bash
 cd backend
+
 python -m venv .venv
 .venv\Scripts\activate   # Windows
 
