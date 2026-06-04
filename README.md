@@ -1,13 +1,10 @@
 # AI Socratic DSA Assistant
 
-This project is a production-ready AI-powered Data Structures and Algorithms learning system that guides students using a **Socratic teaching approach** instead of direct answers.
-
-The system improves problem-solving skills by asking structured questions that help students think step-by-step.
+This project is an AI-powered full-stack tutoring platform that helps students learn Data Structures and Algorithms through guided reasoning using the Socratic learning methodology.
 
 # 📌 Problem Statement
 
 Most students learning Data Structures and Algorithms tend to memorize solutions instead of building intuition.
-
 This project solves that problem by creating an AI tutor that:
 
 * Does NOT give direct answers
@@ -36,10 +33,33 @@ This project solves that problem by creating an AI tutor that:
 
 ## Deployment
 
-* Vercel (Frontend)
+* Netlify (Frontend)
 * Render (Backend)
 
-# 🧠 System Architecture
+# Project Structure
+  ```text
+ai-socratic-dsa-assistant/
+│
+├── backend/
+│   ├── app/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── database/
+│   │   ├── analyzers/
+│   │   └── models/
+│   │   
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   ├── services/
+│   └── public/
+│
+└── README.md
+```
+
+#  System Architecture
 
 ```
 User Input → Next.js Frontend → FastAPI Backend → Socratic Prompt Engine → Groq LLM → Response → UI
@@ -47,14 +67,16 @@ User Input → Next.js Frontend → FastAPI Backend → Socratic Prompt Engine �
 
 # 🔄 System Flow
 
-* User asks a DSA question
-* Frontend sends request to backend API
-* Backend builds Socratic prompt using conversation context
-* Groq LLM generates guided response
-* Response is returned to frontend
-* UI displays conversational learning experience
+1. Student submits a DSA question.
+2. Frontend sends the request to the FastAPI backend.
+3. Backend retrieves recent conversation history.
+4. Socratic Prompt Engine builds a contextual prompt.
+5. Prompt is sent to the Groq LLM.
+6. AI generates a guided response.
+7. Response is stored in PostgreSQL.
+8. Response is returned to the frontend.
 
-# 🤖 AI Behavior (Socratic Engine)
+#  AI Behavior (Socratic Engine)
 
 The AI is strictly designed to:
 
@@ -70,25 +92,44 @@ This project was developed as a collaborative effort.
 
 ## 🔹 My Contributions
 
+### Backend Development
 * Designed and implemented FastAPI backend architecture
-* Built chat API endpoints (`/chat`, `/chat-stream`)
-* Developed Socratic prompt engineering system
-* Integrated Groq LLM API for AI responses
+* Built chat API endpoint (`/chat`)
 * Implemented conversation history management
-* Built frontend chat interface using Next.js
-* Connected frontend with backend APIs
-* Handled full-stack integration (frontend ↔ backend)
-* Managed deployment configuration (Vercel + Railway)
-* Created project documentation (README)
+* Integrated PostgreSQL database layer
+
+### AI Engineering
+* Designed and refined the Socratic prompting strategy
+* Integrated Groq LLM API
+* Built context-aware tutoring workflow
+* Developed guided reasoning logic for DSA learning
+
+### Code Analysis Support
+* Implemented code analysis pipeline
+* Built code-context generation for tutoring assistance
+* Integrated code feedback workflow
+
+### Full-Stack Integration
+* Connected Next.js frontend with FastAPI backend
+* Implemented API communication layer
+* Managed end-to-end request and response flow
+
+### Deployment & DevOps
+* Deployed backend on Render
+* Configured frontend deployment on Netlify
+* Managed environment variables
+* Debugged production deployment issues
+
+### Documentation
+* Created technical documentation and setup instructions
 
 ## 🔹 Teammate Contributions
 
-* Designed overall project structure and system architecture
-* Implemented database layer (PostgreSQL integration)
-* Built data storage and retrieval logic
-* Assisted in backend utility modules
-* UI improvements and frontend styling enhancements
-* Testing and debugging support during integration
+* Contributed to frontend project setup and component structure
+* Assisted with chat interface development using Next.js
+* Supported database integration and data management tasks
+* Contributed to UI styling and user experience improvements
+* Participated in testing, debugging, and integration activities
 
 # 🚀 How to Run
 
@@ -164,12 +205,6 @@ DATABASE_URL=your_postgres_url
 }
 ```
 
-## Streaming Endpoint
-
-### POST /chat-stream
-
-Used for real-time Socratic responses.
-
 # 💬 Sample Interaction
 
 ## User
@@ -190,40 +225,28 @@ How does choosing a pivot help divide the problem into smaller parts?
 
 # 🔗 Live Demo
 
-* Frontend: [https://your-vercel-url](https://your-vercel-url)
-* Backend API: [https://your-railway-url](https://your-railway-url)
+ Frontend:
+ https://ai-socratic-dsa-assistant.netlify.app/
+
+ Backend API:
+ https://ai-socratic-dsa-assistant-8.onrender.com/docs
+
+## Deployment Stack
+  Netlify
+  Render
+  Neon
 
 # 📸 API Preview
 
-* `/docs` → FastAPI Swagger UI available for testing
-
-#  Deployment
-
-## Backend
-
-*  Render
-
-## Frontend
-
-* Vercel
-
-## Database
-
-* Neon PostgreSQL
-
+![API Preview](screenshots/api-preview.png)
 
 # 📈 Future Improvements
 
 * Adaptive difficulty based on student level
-* Code execution support
 * Progress tracking system
 * Personalized learning paths
 * Multi-language support
 
 # 🏁 Summary
 
-This project demonstrates a production-level AI tutoring system with:
-
-* Full-stack architecture
-* Real-time AI interaction
-* Prompt engineering (Socratic method)
+This project demonstrates an end-to-end AI tutoring platform that combines modern web development, prompt engineering, Large Language Models, and cloud deployment to create an interactive DSA learning experience.
