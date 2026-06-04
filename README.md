@@ -248,9 +248,9 @@ How does choosing a pivot help divide the problem into smaller parts?
  https://ai-socratic-dsa-assistant-8.onrender.com/docs
 
 ## Deployment Stack
- ● Netlify
- ● Render
- ● Neon
+ * Netlify
+ * Render
+ * Neon
 
 #  API Preview
 
