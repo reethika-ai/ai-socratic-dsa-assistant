@@ -1,21 +1,21 @@
 import os
-
+from pathlib import Path
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Load .env from backend root correctly
+env_path = Path(__file__).resolve().parent.parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
-if not DATABASE_URL:
-    print("WARNING: DATABASE_URL not set, using SQLite fallback")
-    DATABASE_URL = "sqlite:///./test.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./socratic.db")
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-    connect_args={"check_same_thread": False}
-    if "sqlite" in DATABASE_URL
-    else {}
-)
+# If it's a local sqlite database, ensure the path is absolute so it doesn't fail based on CWD
+if DATABASE_URL.startswith("sqlite:///./"):
+    db_file_path = env_path.parent / DATABASE_URL.replace("sqlite:///./", "")
+    DATABASE_URL = f"sqlite:///{db_file_path}"
+    
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
     autocommit=False,
