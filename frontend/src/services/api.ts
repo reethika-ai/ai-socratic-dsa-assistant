@@ -1,8 +1,9 @@
-const API_URL = " https://ai-socratic-dsa-assistant-9.onrender.com";
+const API_URL = "https://ai-socratic-dsa-assistant-9.onrender.com";
 
 export async function sendMessage(
   studentId: string,
-  message: string
+  message: string,
+  code: string
 ) {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
@@ -12,6 +13,7 @@ export async function sendMessage(
     body: JSON.stringify({
       student_id: studentId,
       message: message,
+      code: code,
     }),
   });
 
