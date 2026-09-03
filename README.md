@@ -239,13 +239,13 @@ How does choosing a pivot help divide the problem into smaller parts?
 # 🔗 Live Demo
 
  Frontend:
- https://ai-socratic-dsa-assistant.netlify.app/
+ https://aidsa-socraticassistant.netlify.app
 
  Backend API:
- https://ai-socratic-dsa-assistant-8.onrender.com
+https://ai-socratic-dsa-assistant-9.onrender.com
 
  API Documentation:
- https://ai-socratic-dsa-assistant-8.onrender.com/docs
+https://ai-socratic-dsa-assistant-9.onrender.com/docs
 
 ## Deployment Stack
  * Netlify
