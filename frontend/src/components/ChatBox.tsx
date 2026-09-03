@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
 import { sendMessage } from "../services/api";
 
@@ -20,6 +21,7 @@ export default function ChatBox() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -33,59 +35,94 @@ export default function ChatBox() {
   );
 
   const handleSend = async () => {
+    // Don't send empty messages
     if (!input.trim()) return;
 
-    const userMessage = input;
+    const userMessage = input.trim();
 
-    // add messages
+    // Add user's message and thinking message
     setMessages((prev) => [
       ...prev,
-      { role: "user", content: userMessage },
-      { role: "assistant", content: "Thinking..." },
+      {
+        role: "user",
+        content: userMessage,
+      },
+      {
+        role: "assistant",
+        content: "Thinking...",
+      },
     ]);
 
+    // Clear input
     setInput("");
+
+    // Show loading
     setLoading(true);
 
     try {
+      // Send student ID + message + code to backend
       const data = await sendMessage(
         STUDENT_ID,
         userMessage,
         code
       );
 
+      console.log("AI response:", data);
+
+      // Replace "Thinking..." with actual AI response
       setMessages((prev) => {
         const updated = [...prev];
+
         updated[updated.length - 1] = {
           role: "assistant",
-          content: data.response,
+          content:
+            data.response ||
+            data.message ||
+            "No response received from AI.",
         };
+
         return updated;
       });
-
     } catch (error) {
-      console.error(error);
+      console.error("Chat error:", error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
+      // Replace "Thinking..." with error message
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[updated.length - 1] = {
           role: "assistant",
-          content: "Error getting response",
-        },
-      ]);
-    }
+          content:
+            "Error getting response. Please try again.",
+        };
 
-    setLoading(false);
+        return updated;
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Allow Enter key to send message
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter" && !loading) {
+      handleSend();
+    }
   };
 
   return (
     <div className="p-4 max-w-xl mx-auto">
 
-      {/* Messages */}
+      {/* Chat messages */}
       <div className="space-y-2 mb-4">
+
         {messages.map((msg, i) => (
           <div key={i}>
-            <b>{msg.role === "user" ? "You" : "AI"}:</b>{" "}
+            <b>
+              {msg.role === "user" ? "You" : "AI"}:
+            </b>{" "}
             {msg.content}
           </div>
         ))}
@@ -93,32 +130,39 @@ export default function ChatBox() {
         {/* Typing indicator */}
         {loading && <TypingIndicator />}
 
-        {/* Auto scroll */}
+        {/* Auto-scroll target */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input section */}
       <div className="mt-4 space-y-2">
+
+        {/* Question input */}
         <input
           className="border p-2 w-full"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Ask something..."
+          disabled={loading}
         />
 
+        {/* Code input */}
         <textarea
           className="border p-2 w-full h-32"
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Paste your code here..."
+          disabled={loading}
         />
 
+        {/* Send button */}
         <button
           onClick={handleSend}
-          disabled={loading}
+          disabled={loading || !input.trim()}
           className="bg-blue-500 text-white px-4 py-2 w-full disabled:opacity-50"
         >
-          Send
+          {loading ? "Thinking..." : "Send"}
         </button>
       </div>
     </div>
