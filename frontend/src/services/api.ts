@@ -4,7 +4,7 @@ export async function sendMessage(
   code?: string
 ) {
   const API_URL =
-    "https://ai-socratic-dsa-assistant-8.onrender.com";
+    "http://127.0.0.1:8000";
 
   const res = await fetch(
     `${API_URL}/chat`,
