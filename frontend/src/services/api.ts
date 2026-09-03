@@ -1,4 +1,14 @@
+
+export async function sendMessage(
+  studentId: string,
+  message: string,
+  code?: string
+) {
+  const API_URL =
+    "http://127.0.0.1:8000";
+
 const API_URL = "http://localhost:8000";
+
 
 export async function sendMessage(message: string) {
   const res = await fetch(`${API_URL}/chat`, {
