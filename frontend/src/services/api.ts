@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = " https://ai-socratic-dsa-assistant-9.onrender.com";
 
 export async function sendMessage(
   studentId: string,
